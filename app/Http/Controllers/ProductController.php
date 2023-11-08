@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ProductNotBelongsToUserException;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Support\Facades\Auth;
 
 
 
@@ -47,6 +49,7 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->stock = $request->stock;
         $product->discount = $request->discount;
+        $product->user_id = Auth::id();
         $product->save();
 
         if ($product) {
@@ -77,6 +80,7 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
+        $this->ProductUserCheck($product);
         $product->detail = $request->description;
         $product->update($request->all());
         if ($product) {
@@ -89,6 +93,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        $this->ProductUserCheck($product);
         /*
         return new ProductResource($product);
         */
@@ -97,6 +102,14 @@ class ProductController extends Controller
             return "'' " . $product_name . " ''" . " named product deleted successfully !";
         } else {
             return "Something went wrong while deleting the product";
+        }
+    }
+
+
+    public function ProductUserCheck($product)
+    { //To authorize only user who created it to be able to do action 
+        if (Auth::id() !== $product->user_id) {
+            throw new ProductNotBelongsToUserException;
         }
     }
 }

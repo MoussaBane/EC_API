@@ -2,11 +2,29 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+
 
 class Handler extends ExceptionHandler
 {
+
+    /*
+    public function apiException($request, $e)
+    {
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json([
+                'error' =>'Product Model Not Found'
+                ], Response::HTTP_NOT_FOUND);
+        }
+
+        if($e instanceof NotFoundHttpException) {}
+    }
+    */
+
+
     /**
      * A list of exception types with their corresponding custom log levels.
      *
