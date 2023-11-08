@@ -89,6 +89,14 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        //
+        /*
+        return new ProductResource($product);
+        */
+        $product_name = $product->name;
+        if ($product->delete()) {
+            return "'' " . $product_name . " ''" . " named product deleted successfully !";
+        } else {
+            return "Something went wrong while deleting the product";
+        }
     }
 }
