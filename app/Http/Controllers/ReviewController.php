@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Product;
 use App\Models\Review;
@@ -29,9 +30,19 @@ class ReviewController extends Controller
     }
 
 
-    public function store(StoreReviewRequest $request)
+    public function store(ReviewRequest $request, Product $product)
     {
-        //
+        /*
+        $review = Review::create($request->all()); //This option gives error because of the lack of product_id
+        $review->product_id = $product->id;
+        */
+        $review = new Review($request->all()); //This option automatically sets the product_id from the request
+        $product->reviews()->save($review); //This is for adding our review to the product's reviews list
+
+        return response([
+            "success" => "Review Successfully created !!!",
+            "data" => new ReviewResource($review)
+        ]);
     }
 
 
