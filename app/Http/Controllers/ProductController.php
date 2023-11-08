@@ -13,6 +13,11 @@ use App\Http\Requests\UpdateProductRequest;
 class ProductController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware("auth:api")->except('index', 'show');
+    }
+
     public function index()
     {
         /*
@@ -33,7 +38,22 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        //
+        /*
+        return $request->all();
+        */
+        $product = new Product;
+        $product->name = $request->name;
+        $product->detail = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->discount = $request->discount;
+        $product->save();
+
+        if ($product) {
+            return new ProductResource($product);
+        } else {
+            return "Something went wrong please try again";
+        }
     }
 
 
@@ -57,7 +77,13 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $product->detail = $request->description;
+        $product->update($request->all());
+        if ($product) {
+            return new ProductResource($product);
+        } else {
+            return "Something went wrong while updating the product";
+        }
     }
 
 
