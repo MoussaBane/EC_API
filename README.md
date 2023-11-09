@@ -2,4 +2,12 @@
 
 # E-Commerce Restful API With Laravel Resource 
 
+## What I Did?
 
+- Use Postman for checking API endpoints.
+- Create Model, Migration, Factory and seeding of data in laravel.
+- Transform any model for the API.
+- Setup environments in Postman.
+- Implement meta links in API.
+- Use Laravel new Resource as the transformer.
+- Transform single data and also collection of data.
