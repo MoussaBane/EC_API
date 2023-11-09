@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NotAccessException;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Product;
 use App\Models\Review;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class ReviewController extends Controller
 {
@@ -58,14 +61,48 @@ class ReviewController extends Controller
     }
 
 
-    public function update(UpdateReviewRequest $request, Review $review)
+    public function update(UpdateReviewRequest $request, Product $product, Review $review)
     {
-        //
+        /*
+        $this->CheckUserAuthorization($product);
+        */
+        $review->update($request->all());
+        if ($review) {
+            return response([
+                "success" => "Review updated successfully!",
+                "updated" => new ReviewResource($review)
+            ]);
+        } else {
+            return response([
+                "errors" => "Something went wrong while updating the review !"
+            ]);
+        }
     }
 
 
-    public function destroy(Review $review)
+    public function destroy(Product $product, Review $review)
     {
-        //
+        /*
+        $this->CheckUserAuthorization($product);
+        */
+        $deletedReview = $review->customer;
+        if ($review->delete()) {
+            return response([
+                "success" => "'" . $deletedReview . "'" . " review has been successfully deleted !"
+            ]);
+        } else {
+            return response([
+                "errors" => "Something went wrong when deleting this review please try again !"
+            ]);
+        }
     }
+
+    /*
+    public function CheckUserAuthorization(Product $product)
+    {
+        if (Auth::id() !== $product->user_id) {
+            throw new NotAccessException;
+        }
+    }
+    */
 }
